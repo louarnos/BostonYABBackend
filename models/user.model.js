@@ -33,6 +33,10 @@ module.exports.getUserByUsername = ( username, callback ) => {
 	return User.findOne({ username: username }, callback);
 }
 
+module.exports.getUserByUserById = ( id, callback ) => {
+	return User.findOne({ _id: id }, callback);
+}
+
 module.exports.comparePassword = function(candidatePassword, hash, callback){
   bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
     if(err) throw err;

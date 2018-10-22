@@ -5,6 +5,7 @@ require('dotenv').config();
 // Middleware ( move )
 const session = require('express-session');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 // BodyParser Middleware
@@ -73,7 +74,9 @@ app.get('/', ( req, res ) => {
 app.post('/login',
   passport.authenticate('local'),
   (req, res) => {
-    res.send(req.user);
+    const body = { id: req.user._id, username: req.user.username, name: req.user.username };
+    const token = jwt.sign({ user : body },'top_secret');
+    res.json({token});
   });
 
 app.get('/logout', function(req, res){
