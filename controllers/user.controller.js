@@ -21,22 +21,30 @@ exports.register = function (req, res) {
 		});
 
     } else if ( token === process.env.REGISTRATION_PW && password !== passwordConfirmation ) {
-        console.log('passwords dont match');
-		res.status(400).send("{errors: \"Passwords don't match\"}").end()
+		res.status(400).send("{error: \"Passwords don't match\"}").end()
     } else if ( token !== process.env.REGISTRATION_PW ) {
-        console.log('Not authenticated');
-		res.status(403).send("{errors: \"Access Denied\"}").end()
+		res.status(403).send("{error: \"Access Denied\"}").end()
     }
+};
+
+exports.login = function ( req, res ) {
+    let password = req.body.password;
+	let username = req.body.username;
+};
+
+exports.byUsername = function (req, res) {
+	let username = req.body.username;
+	let user     = User.getUserByUsername(username);
+	res.send(user);
 };
 
 exports.all = function (req, res) {
 	User.find({}, function(err, users) {
-		var userMap = {};
+		let userMap = {};
 
 		users.forEach(function(user) {
 		  userMap[user._id] = user;
 		});
-
 		res.send(userMap);  
    });
 };

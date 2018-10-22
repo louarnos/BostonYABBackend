@@ -28,3 +28,14 @@ module.exports.createUser = function(newUser, callback){
     });
   });
 }
+
+module.exports.getUserByUsername = ( username, callback ) => {
+	return User.findOne({ username: username }, callback);
+}
+
+module.exports.comparePassword = function(candidatePassword, hash, callback){
+  bcrypt.compare(candidatePassword, hash, function(err, isMatch) {
+    if(err) throw err;
+    callback(null, isMatch);
+  });
+}
