@@ -6,8 +6,11 @@ require('dotenv').config();
 const session = require('express-session');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
+const JWTstrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+
 // BodyParser Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -27,6 +30,7 @@ app.use(passport.session());
 // TODO this is a mess and needs to be redesigned
 const User = require('./models/user.model');
 const LocalStrategy = require('passport-local').Strategy;
+
 passport.use( new LocalStrategy(
   (username, password, done) => {
     User.getUserByUsername(username, (err, user) => {
@@ -46,6 +50,17 @@ passport.use( new LocalStrategy(
   }
 ));
 
+passport.use(new JWTstrategy({
+  secretOrKey : 'top_secret',
+  jwtFromRequest : ExtractJWT.fromUrlQueryParameter('secret_token')
+}, async (token, done) => {
+  try {
+    return done(null, token.user);
+  } catch (error) {
+    done(error);
+  }
+}));
+
 passport.serializeUser( (user, done) => {
   done(null, user.id);
 });
@@ -64,7 +79,7 @@ const uri = process.env.MONGOLAB_URI || 'mongodb://localhost/yab_db';
 mongoose.Promise = global.Promise;
 mongoose.connect(uri); 
 
-app.use('/posts', post);
+app.use('/posts', passport.authenticate('jwt', { session : false }), post);
 app.use('/users', user);
 app.get('/', ( req, res ) => {
     res.send('Hello World');

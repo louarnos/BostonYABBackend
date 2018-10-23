@@ -33,7 +33,7 @@ module.exports.getUserByUsername = ( username, callback ) => {
 	return User.findOne({ username: username }, callback);
 }
 
-module.exports.getUserByUserById = ( id, callback ) => {
+module.exports.getUserById = ( id, callback ) => {
 	return User.findOne({ _id: id }, callback);
 }
 
