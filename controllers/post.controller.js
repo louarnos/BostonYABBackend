@@ -1,8 +1,14 @@
 const Post = require('../models/post.model');
 
-//Simple version, without validation or sanitation
-const test = (req, res ) =>  {
-    res.send('Greetings Evie Bruh!');
+const index = (req, res, next) => {
+	Post.find({}, (err, posts) => {
+		let postMap = {};
+
+		posts.forEach( ( post ) => {
+		  postMap[post._id] = post;
+		});
+		res.send(postMap);  
+   });
 };
 
 const add = ( req, res, next ) => {
@@ -28,8 +34,31 @@ const add = ( req, res, next ) => {
     }
 }
 
+const update = ( req, res, next ) => {
+    let data   = {
+        body: req.body.body,
+        title: req.body.title,
+        author: req.body.author,
+        _id: req.body._id,
+    }
+    Post.updateOne( data )
+        .then( res => {
+            res.json({ res })
+        })
+        .catch( err => {
+            res.json( { err } )
+        });
+}
+
+const destroy = ( req, res, next ) => {
+    Post.findByIdAndRemove( req.body._id, ( err, doc ) => {
+            res ? res.json( { message: "deletion successful",  doc }) : res.json({ err })
+        })
+}
 
 module.exports = {
-    test: test,
     add: add,
+    update: update,
+    index: index,
+    destroy: destroy,
 };
