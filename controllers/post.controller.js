@@ -15,6 +15,7 @@ const add = ( req, res, next ) => {
     let body   = req.body.body
     let title  = req.body.title
     let author = req.body.author
+    console.log( req.files );
     if ( body && title && author ) {
         let post = new Post({
             body: body,
