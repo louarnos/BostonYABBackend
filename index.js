@@ -52,7 +52,7 @@ passport.use( new LocalStrategy(
 
 passport.use(new JWTstrategy({
   secretOrKey : 'top_secret',
-  jwtFromRequest : ExtractJWT.fromUrlQueryParameter('secret_token')
+  jwtFromRequest : ExtractJWT.fromAuthHeaderAsBearerToken()
 }, async (token, done) => {
   try {
     return done(null, token.user);
@@ -81,22 +81,21 @@ mongoose.connect(uri);
 
 app.use('/posts', passport.authenticate('jwt', { session : false }), post);
 app.use('/users', user);
+
 app.get('/', ( req, res ) => {
     res.send('Hello World');
 });
 
 // Would like to move these somewhere else...
-app.post('/login',
-  passport.authenticate('local'),
-  (req, res) => {
+app.post('/login', passport.authenticate('local'), ( req, res ) => {
     const body = { id: req.user._id, username: req.user.username, name: req.user.username };
-    const token = jwt.sign({ user : body },'top_secret');
+    const token = jwt.sign({ user : body }, 'top_secret', { expiresIn: '2h' } );
     res.json({token});
-  });
+});
 
-app.get('/logout', function(req, res){
+app.post('/logout', ( req, res ) => {
   req.logout();
-  res.send(null)
+  res.send({ success: true })
 });
 
 app.listen( 3000, () => { console.log('Gooooooooooomba') });
