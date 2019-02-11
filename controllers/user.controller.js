@@ -1,11 +1,13 @@
 const User = require('../models/user.model');
 
 //Simple version, without validation or sanitation
-exports.register = function (req, res) {
+exports.register = (req, res ) => {
     let token                = req.body.authToken;
     let password             = req.body.password;
     let passwordConfirmation = req.body.passwordConfirmation;
 
+	// TODO THAT USERNAME/EMAIL NOT ALREADY TAKEN
+	//
     if ( token === process.env.REGISTRATION_PW && password === passwordConfirmation ) {
 
 		let newUser = new User({
@@ -16,33 +18,33 @@ exports.register = function (req, res) {
 		});
 
 		User.createUser(newUser, function(err, user){
-		  if(err) throw err;
-		  res.send(user).end()
+		  if( err ) throw err;
+		  res.json(user)
 		});
 
     } else if ( token === process.env.REGISTRATION_PW && password !== passwordConfirmation ) {
-		res.status(400).send("{error: \"Passwords don't match\"}").end()
+		res.status(400).json({error: "Passwords don't match"});
     } else if ( token !== process.env.REGISTRATION_PW ) {
-		res.status(403).send("{error: \"Access Denied\"}").end()
+		res.status(403).json({ error: 'Access Denied'});
     }
 };
 
-exports.login = function ( req, res ) {
+exports.login = ( req, res ) => {
     let password = req.body.password;
 	let username = req.body.username;
 };
 
-exports.byUsername = function (req, res) {
+exports.byUsername = (req, res) => {
 	let username = req.body.username;
 	let user     = User.getUserByUsername(username);
 	res.send(user);
 };
 
-exports.all = function (req, res) {
-	User.find({}, function(err, users) {
+exports.all = (req, res) => {
+	User.find({}, (err, users) => {
 		let userMap = {};
 
-		users.forEach(function(user) {
+		users.forEach( (user) => {
 		  userMap[user._id] = user;
 		});
 		res.send(userMap);  
