@@ -8,8 +8,8 @@ const user = require('../routes/user.route'); // Imports routes for the users ro
 const author = require('../routes/author.route');
 
 app.use('/posts', passport.authenticate('jwt', { session : false }), post);
+app.use('/authors', passport.authenticate('jwt', { session : false }), author );
 app.use('/users', user);
-app.use('/authors', author );
 
 module.exports = {
     app,
