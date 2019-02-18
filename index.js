@@ -9,4 +9,4 @@ const uri = process.env.MONGOLAB_URI || 'mongodb://localhost/yab_db';
 mongoose.Promise = global.Promise;
 mongoose.connect(uri); 
 
-app.listen( 3000, () => { console.log('Gooooooooooomba') });
+app.listen( 3000, () => { console.log('Server listening on port 3000') });
