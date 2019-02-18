@@ -66,7 +66,7 @@ passport.deserializeUser( (id, done) => {
 app.post('/login', passport.authenticate('local'), ( req, res ) => {
     const body = { id: req.user._id, username: req.user.username, name: req.user.username };
     const token = jwt.sign({ user : body }, 'top_secret', { expiresIn: '2h' } );
-    res.json({token});
+    res.json({token: token, user: req.user });
 });
 
 app.post('/logout', ( req, res ) => {
