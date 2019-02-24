@@ -44,10 +44,13 @@ const comparePassword = (candidatePassword, hash, callback) => {
   });
 }
 
+User.createUser = createUser;
+User.getUserByUsername = getUserByUsername;
+User.getUserById = getUserById;
+User.comparePassword = comparePassword;
+
 module.exports = {
-	comparePassword,
-	getUserById,
-	getUserByUsername,
-	createUser,
-	User,
+	User
 }
+
+module.exports = User;
