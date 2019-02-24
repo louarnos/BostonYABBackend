@@ -4,7 +4,7 @@ const Schema   = mongoose.Schema;
 const AuthorSchema = new Schema({
   name: {
     type: String,
-    index:true
+    index: true
   },
   pronouns: {
     type: Array
