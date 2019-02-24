@@ -1,6 +1,5 @@
 const User = require('../models/user.model');
 
-//Simple version, without validation or sanitation
 exports.register = (req, res ) => {
     let token                = req.body.authToken;
     let password             = req.body.password;
