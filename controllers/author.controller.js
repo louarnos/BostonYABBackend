@@ -3,11 +3,15 @@ const Author = require('../models/author.model');
 const create = (req, res ) => {
     let name     = req.body.name
     let pronouns = req.body.pronouns
-    let filepath =  req.files[0].filename
+    let filepath;
+
+    if ( req.files && req.files[0] ) {
+        filepath =  req.files[0].filename
+    }
 
     if ( name ) {
         let authorData = { name };
-        if ( pronouns ) { authorData.pronouns       = pronouns }
+        if ( pronouns ) { authorData.pronouns       = pronouns.split(',') }
         if ( filepath ) { authorData.profilePicture = filepath }
 
         let author = new Author(authorData)
@@ -24,6 +28,13 @@ const create = (req, res ) => {
     }
 };
 
+const show = ( req, res ) => {
+	Author.find({}, (err, authors) => {
+		res.json({authors});
+   });
+}
+
 module.exports = {
-    create: create,
+    create,
+    show,
 }
