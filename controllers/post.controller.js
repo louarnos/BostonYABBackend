@@ -1,16 +1,9 @@
 const Post = require('../models/post.model');
 
 const index = (req, res, next) => {
-	Post.find({}, (err, posts) => {
-		let postMap = {};
-
-		posts.forEach( ( post ) => {
-          post.populate('author', ( err, post ) => {
-		    postMap[post._id] = post;
-          })
-		});
-		res.send(postMap);  
-   });
+    Post.find({}).populate('author').exec( ( err, posts ) => {
+		res.send({ posts});
+    })
 };
 
 const create = ( req, res, next ) => {
