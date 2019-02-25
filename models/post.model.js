@@ -4,12 +4,10 @@ const Schema   = mongoose.Schema;
 let PostSchema = new Schema({
     title: String,
     body: String,
-    // TODO Author table with images stored
-    author: String,
+    files: Array,
+    tags: Array,
+    author: { type: Schema.Types.ObjectId, ref: 'Author' },
     date: { type: Date, default: Date.now },
-    // TODO Images table stored to s3
 });
 
-
-// Export the model
 module.exports = mongoose.model('Post', PostSchema);
