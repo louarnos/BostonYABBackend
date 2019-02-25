@@ -5,33 +5,48 @@ const index = (req, res, next) => {
 		let postMap = {};
 
 		posts.forEach( ( post ) => {
-		  postMap[post._id] = post;
+          post.populate('author', ( err, post ) => {
+		    postMap[post._id] = post;
+          })
 		});
 		res.send(postMap);  
    });
 };
 
-const add = ( req, res, next ) => {
+const create = ( req, res, next ) => {
     let body   = req.body.body
     let title  = req.body.title
-    let author = req.body.author
+    let author = req.body.authorId
 
     if ( body && title && author ) {
-        let post = new Post({
+        let data = {
             body: body,
             title: title,
             author: author
-        })
+        }
+
+        if ( req.body.tags ) {
+            data.tags = req.body.tags.split(',');
+        }
+
+        if ( req.files && req.files.length ) {
+            data.files = req.files.map( img => img.filename )
+        }
+
+        let post = new Post(data)
 
         post.save()
             .then( post => {
-                res.json({ post })
+                post.populate('author', ( err, post) => {
+                    if ( err ) { Promise.reject( err ); }
+                    res.json({ post })
+                });
             })
             .catch( err => {
                 res.json( { err } )
             })
     } else {
-        res.json( { message: "You must provide a body, title, and author to create a post" } )
+        res.status(401).json( { error: "You must provide a body, title, and author to create a post" } )
     }
 }
 
@@ -58,8 +73,8 @@ const destroy = ( req, res, next ) => {
 }
 
 module.exports = {
-    add: add,
-    update: update,
-    index: index,
-    destroy: destroy,
+    create,
+    update,
+    index,
+    destroy,
 };
