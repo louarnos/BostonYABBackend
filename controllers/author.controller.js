@@ -24,7 +24,7 @@ const create = (req, res ) => {
                 res.json( { err } )
             })
     } else {
-        res.json( { message: "You must provide a name to create an author" } )
+		res.status(400).json({error: "You must provide a name to create an author"});
     }
 };
 
