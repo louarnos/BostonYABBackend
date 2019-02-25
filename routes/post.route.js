@@ -1,13 +1,13 @@
 const express = require('express');
 const router  = express.Router();
 const Upload  = require('../middleware/multer').upload;
+const passport = require('../middleware/auth.js').passport;
 
 const postController = require('../controllers/post.controller');
 
-// a simple test url to check that all of our files are communicating correctly.
-router.post( '/add', Upload.array('files', 5), postController.add );
-router.patch( '/update', postController.update );
-router.get( '/index', postController.index );
-router.delete( '/delete', postController.destroy );
+router.get(    '/', postController.index );
+router.post(   '/', passport.authenticate('jwt', { session : false }),  Upload.array('files', 10), postController.create );
+router.patch(  '/', passport.authenticate('jwt', { session : false }),  Upload.array('files', 10), postController.update );
+router.delete( '/', passport.authenticate('jwt', { session : false }), postController.destroy );
 
 module.exports = router;
