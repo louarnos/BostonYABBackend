@@ -60,9 +60,15 @@ const update = ( req, res, next ) => {
 }
 
 const destroy = ( req, res, next ) => {
-    Post.findByIdAndRemove( req.body._id, ( err, doc ) => {
-            res ? res.json( { message: "deletion successful",  doc }) : res.json({ err })
-        })
+    Post.findByIdAndDelete( req.params.id, ( err, doc ) => {
+            if ( err ) {
+                res.json({err});
+            }
+            if ( doc ) {
+                res.json({doc});
+            }
+            next();
+    });
 }
 
 module.exports = {
