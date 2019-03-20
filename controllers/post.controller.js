@@ -10,12 +10,14 @@ const create = ( req, res, next ) => {
     let body   = req.body.body
     let title  = req.body.title
     let author = req.body.authorId
+    let video  = req.body.video
 
     if ( body && title && author ) {
         let data = {
             body: body,
             title: title,
-            author: author
+            author: author,
+            video: video
         }
 
         if ( req.body.tags ) {
